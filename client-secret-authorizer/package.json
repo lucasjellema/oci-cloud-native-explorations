@@ -1,0 +1,11 @@
+{
+	"name": "client-secret-authorizer",
+	"version": "1.0.0",
+	"description": "function to authorize a client secret",
+	"main": "func.js",
+	"author": "Lucas Jellema",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"@fnproject/fdk": ">=0.0.15"
+	}
+}
