@@ -25,13 +25,11 @@ function authorizeClientSecret(token) {
                 "expiresAt": expiry.toISOString(),
                 "context": {
                     "email": "james.doe@example.com"
-                    , "input": token
                 },
                 "wwwAuthenticate": "Bearer realm=\"lucas.jellema.com\""
             }
     return json
 }
-
 
 module.exports = {
     authorizeClientSecret: authorizeClientSecret

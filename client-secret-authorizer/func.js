@@ -2,6 +2,8 @@ const fdk = require('@fnproject/fdk');
 const authorizer = require('./authorizer.js');
 
 fdk.handle(function (input, ctx) {
+  console.log(`Authorizer Function is invoked with input ${JSON.stringify(input)}`)
+  console.log(`Authorizer Function is invoked with ctx ${JSON.stringify(ctx)}`)
   if (!input || !input.type || !(input.type == 'TOKEN' ? input.token : input.header)) {
     // no token is passed in
     const x =
@@ -14,8 +16,6 @@ fdk.handle(function (input, ctx) {
       },
       "wwwAuthenticate": "Bearer realm=\"provide.token.next.time.round\" "
     }
-    // this status causes the authorization to fail and the API Gateway to reject the request with a 401 to the original caller
-    //ctx.setResponseHeader('Fn-Http-Status', 500)
     return x
   }
   const x = authorizer.authorizeClientSecret(input.type == 'TOKEN' ? input.token : input.header)
