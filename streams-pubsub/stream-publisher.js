@@ -44,35 +44,39 @@ function publishMessages(streamId, messages, callback) {
         path: "/20180418/streams/" + encodeURIComponent(streamId) + "/messages",
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',        
+            'Content-Type': 'application/json',
         }
     };
-    msg=
-    {
-        "messages":
-        [
-          {
-            "key": null,
-            "value": "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wZWQgb3ZlciB0aGUgbGF6eSBkb2cu"
-          },
-          {
-            "key": null,
-            "value": "UGFjayBteSBib3ggd2l0aCBmaXZlIGRvemVuIGxpcXVvciBqdWdzLg=="
-          }
-        ]
-      };
-body = JSON.stringify(msg)
+    const message = new Buffer('my personal message - to be encoded in order to be published').toString('base64');
+    msg =
+        {
+            "messages":
+                [
+                    {
+                        "key": null,
+                        "value": "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wZWQgb3ZlciB0aGUgbGF6eSBkb2cu"
+                    },
+                    {
+                        "key": "personal",
+                        "value": message
+                    },
+                    {
+                        "key": null,
+                        "value": "UGFjayBteSBib3ggd2l0aCBmaXZlIGRvemVuIGxpcXVvciBqdWdzLg=="
+                    }
+                ]
+        };
+    body = JSON.stringify(msg)
     var request = https.request(options, handleRequest(callback));
     signRequest(request, body);
     request.write(body)
-
     request.end();
 };
 
 function pubMessages(streamId) {
-        publishMessages(streamId, {}, function (data) {
-            console.log("Messages Published to Stream.");
-            log(JSON.stringify(data))
+    publishMessages(streamId, {}, function (data) {
+        console.log("Messages Published to Stream.");
+        log(JSON.stringify(data))
     });
     return { "Status": "OK" }
 }
