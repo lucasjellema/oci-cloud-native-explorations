@@ -37,84 +37,48 @@ function handleRequest(callback) {
     }
 }
 
-function getStreams(callback) {
+
+function publishMessages(streamId, messages, callback) {
     var options = {
         host: configs.streamingAPIEndpoint,
-        path: "/20180418/streams?compartmentId=" + encodeURIComponent(configs.compartmentId) + "&limit=10&page=&sortBy=TIMECREATED&sortOrder=desc&lifecycleState=",
-        method: "GET"
-    };
-    var request = https.request(options, handleRequest(callback));
-    //log("Go Sign and Send Request") 
-    signRequest(request);
-    request.end();
-
-}
-function getStream(streamId, callback) {
-    var options = {
-        host: configs.streamingAPIEndpoint,
-        path: "/20180418/streams/ocid1.stream.oc1.iad.amaaaaaa6sde7caa4mjocclrqlxxi2dtdj7o5aia66zem23hd6f23muer47a",
-        method: "GET"
-    };
-    var request = https.request(options, handleRequest(callback));
-    //log("Go Sign and Send Request") 
-    signRequest(request);
-    request.end();
-
-}
-
-
-function getCursor(streamId, callback) {
-    var options = {
-        host: configs.streamingAPIEndpoint,
-        path: "/20180418/streams/" + encodeURIComponent(streamId) + "/cursors",
+        path: "/20180418/streams/" + encodeURIComponent(streamId) + "/messages",
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json',        
         }
     };
+    msg=
+    {
+        "messages":
+        [
+          {
+            "key": null,
+            "value": "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wZWQgb3ZlciB0aGUgbGF6eSBkb2cu"
+          },
+          {
+            "key": null,
+            "value": "UGFjayBteSBib3ggd2l0aCBmaXZlIGRvemVuIGxpcXVvciBqdWdzLg=="
+          }
+        ]
+      };
+body = JSON.stringify(msg)
     var request = https.request(options, handleRequest(callback));
-    //log("Go Sign and Send Request") 
-    const payload = {
-        "partition": "0",
-        "type": "TRIM_HORIZON"
-    }
-    let body = JSON.stringify(payload)
     signRequest(request, body);
     request.write(body)
+
     request.end();
 };
 
-function getMessages(streamId, cursor, callback) {
-    var options = {
-        host: configs.streamingAPIEndpoint,
-        path: "/20180418/streams/" + encodeURIComponent(streamId) + "/messages?cursor=" + encodeURIComponent(cursor) + "&limit=100",
-        method: 'GET',
-        headers: {
-        }
-    };
-    var request = https.request(options, handleRequest(callback));
-    signRequest(request);
-    request.end();
-};
-
-function consumeMessages(streamId) {
-    // first open a cursor for the stream - for all messages still available in the stream
-    getCursor(streamId, function (data) {
-        // using the cursor, retrieve all available messages
-        getMessages(streamId, data.value, function (data) {
-            console.log("Messages Consumed from Stream:");
-            data.forEach((e) => {
-                let buff = new Buffer.from(e.value, 'base64');
-                let text = buff.toString('ascii');
-                log( text)
-            })
-        })
+function pubMessages(streamId) {
+        publishMessages(streamId, {}, function (data) {
+            console.log("Messages Published to Stream.");
+            log(JSON.stringify(data))
     });
     return { "Status": "OK" }
 }
 
 module.exports = {
-    consume: consumeMessages
+    publish: pubMessages
 }
 
 // invoke on the command line with :
@@ -132,7 +96,7 @@ function overrideNowBasedOnOS() {
 
 
 // invoke with
-// node stream-consumer '{"streamId":"ocid1.stream.oc1.iad.amaaaaaa6sde7caa4mjocclrqlxxi2dtdj7o5aia66zem23hd6f23muer47a"}'
+// node stream-publisher '{"streamId":"ocid1.stream.oc1.iad.amaaaaaa6sde7caa4mjocclrqlxxi2dtdj7o5aia66zem23hd6f23muer47a"}'
 
 
 run = async function () {
@@ -147,7 +111,7 @@ run = async function () {
         log("input:" + process.argv[2])
         const input = JSON.parse(process.argv[2])
         log("input: " + JSON.stringify(input))
-        let response = consumeMessages(input.streamId)
+        let response = pubMessages(input.streamId)
         log("response: " + JSON.stringify(response))
     }
 }
@@ -157,8 +121,7 @@ run2 = async function () {
 
     const input = { "streamId": "ocid1.stream.oc1.iad.amaaaaaa6sde7caa4mjocclrqlxxi2dtdj7o5aia66zem23hd6f23muer47a" }
     log("input: " + JSON.stringify(input))
-    let response = consumeMessages(input.streamId)
-    log("response: " + response)
+    let response = pubMessages(input.streamId)
     log("response: " + JSON.stringify(response))
 }
 
