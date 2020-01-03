@@ -19,7 +19,8 @@ function rssToJson(rssURL) {
 }
 
 // this function accepts an RSS Feed URL. 
-// It will retrieve the RSS Feed from that URL, turn its contents into JSON and save the resulting JSON file to OCI Object Storage
+// It will retrieve the RSS Feed from that URL, turn its contents into JSON 
+// and save the resulting JSON file to OCI Object Storage
 // under the filename indicated
 async function processRSS(rssURL, filename) {
     let endpoint = process.env['file_writer_endpoint'];
