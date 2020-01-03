@@ -1,0 +1,12 @@
+{
+	"name": "function-trigger-listener",
+	"version": "1.0.0",
+	"description": "This application listens on an OCI Stream for messages that are actually deferred function calls - and then makes the function call",
+	"main": "function-trigger-listener",
+	"author": "",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"http-signature": "^1.3.1",
+		"jssha": "^2.3.1"
+	}
+}
