@@ -136,13 +136,13 @@ function overrideNowBasedOnOS() {
 
 
 run = async function () {
-    // const osdate = execSync('date');
-    // const d = Date.parse(osdate)
-    // const nowDate = new Date(d)
-    // if (d - Date.now() > 10000) {
-    //     // in this case the mapping from system clock to Date() is corrupt somehow
-    //     overrideNowBasedOnOS()
-    // }
+    const osdate = execSync('date');
+    const d = Date.parse(osdate)
+    const nowDate = new Date(d)
+//    if (d - Date.now() > 10000) {
+        // in this case the mapping from system clock to Date() is corrupt somehow
+        overrideNowBasedOnOS()
+  //  }
     if (process.argv && process.argv[2]) {
         log("input:" + process.argv[2])
         const input = JSON.parse(process.argv[2])
