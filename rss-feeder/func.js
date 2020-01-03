@@ -1,9 +1,9 @@
 const fdk = require('@fnproject/fdk');
 
-const rssFeeder = require('./rssFeeder')
+const rssFeeder = require('./rssFeederAsync')
 fdk.handle(function (input) {
   try {
-    const x = rssFeeder.processRSS(input.rssFeedURL, input.filename)
+    const x = rssFeeder.processRSSAsync(input.rssFeedURL, input.filename)
     console.log(`invoked rssFeeder;result: ${JSON.stringify(x)}`)
     return x
   } catch (e) {
